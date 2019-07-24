@@ -171,7 +171,7 @@ impl Rnym {
             gamma: str2BigInt(gamma),
             grnym: Default::default(),
         };
-        rnym.gamma = hashing_str(id).modpow(&rnym.exp, &rnym.gamma);
+        rnym.grnym = hashing_str(id).modpow(&rnym.exp, &rnym.gamma);
         rnym
     }
 }
@@ -214,11 +214,31 @@ struct Params {
     y10: BigInt,
     y11: BigInt,
     y12: BigInt,
+
+    z13: BigInt,
+    z14: BigInt,
+    z15: BigInt,
+    z16: BigInt,
+    z17: BigInt,
+    z18: BigInt,
+    z19: BigInt,
+
+    rnym: BigInt,
 }
 
+use std::collections::HashMap;
+//use serde_json;
+
+fn export(params: Params) -> String {
+    // jsonify the credential
+
+    let credential: HashMap<String, String> = HashMap();
+
+    serde_json::to_string(&credential).unwrap()
+}
 
 #[wasm_bindgen]
-pub fn greet(s: &str, e: &str, v: &str, uk: &str, a: &str, b: &str, g: &str, h: &str, n: &str, exp: &str, gamma: &str, course_id: &str) {
+pub fn greet(s: &str, e: &str, v: &str, uk: &str, a: &str, b: &str, g: &str, h: &str, n: &str, exp: &str, gamma: &str, course_id: &str) -> String {
     let a = str2BigInt(a);
     let b = str2BigInt(b);
     let n = str2BigInt(n);
@@ -233,10 +253,10 @@ pub fn greet(s: &str, e: &str, v: &str, uk: &str, a: &str, b: &str, g: &str, h: 
     let mut params = Params::default();
     let base = Base::new(g, h, n.clone());
 
-    params.Cs = base.exp(&str2BigInt(s), &pr.rs);
+    params.Cs = base.exp(&s, &pr.rs);
     params.Ce = base.exp(&e, &pr.re);
     params.Cw = base.exp(&w, &pr.rw);
-    params.Cx = base.exp(&str2BigInt(uk), &pr.rx);
+    params.Cx = base.exp(&uk, &pr.rx);
     params.Cv = v * base.g.modpow(&w, &n) % &n;
     let z = &e * &w;
     params.Cz = base.exp(&z, &pr.rz);
@@ -277,12 +297,23 @@ pub fn greet(s: &str, e: &str, v: &str, uk: &str, a: &str, b: &str, g: &str, h: 
     params.z11 = pr.fuzz(11, &re);
     params.z12 = pr.fuzz(12, &rz);
 
-    // ??? mod n ???
     pr.r_ = &pr.rz - &e * &pr.rw;
     params.y9 = base.exp(&pr.rn[13], &pr.rn[14]);
     params.y10 = base.exp(&pr.rn[15], &pr.rn[16]);
     params.y11 = base.exp(&pr.rn[17], &pr.rn[18]);
     params.y12 = _exp(&pr.Cw, &pr.rn[17], &base.h, &pr.rn[19], &n);
+
+    params.z13 = pr.fuzz(13, &z);
+    params.z14 = pr.fuzz(14, &pr.rz);
+    params.z15 = pr.fuzz(15, &w);
+    params.z16 = pr.fuzz(16, &pr.rw);
+    params.z17 = pr.fuzz(17, &e);
+    params.z18 = pr.fuzz(18, &pr.re);
+    params.z19 = pr.fuzz(19, &pr.r_);
+
+    params.rnym = rnym.grnym.modpow(&uk, &rnym.gamma);
+
+    export()
 }
 
 
