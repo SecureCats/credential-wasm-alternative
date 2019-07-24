@@ -10,17 +10,3 @@ pub fn set_panic_hook() {
 }
 
 
-#[derive(Default)]
-pub struct Params {
-    Cs: BigInt,
-    Ce: BigInt,
-    Cv: BigInt,
-    Cw: BigInt,
-    C: BigInt,
-    Cx: BigInt,
-    Cz: BigInt,
-    y1: BigInt,
-    z1: BigInt,
-    x:BigInt,
-}
-
